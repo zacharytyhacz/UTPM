@@ -2,7 +2,7 @@ import sys
 import json
 import os
 
-commands = ['setup','make','create','install','help']
+commands = ['setup','make','create','install','help','require']
 
 
 arg_num = 0
@@ -43,7 +43,7 @@ def setup():
 			del data 
 		answer = input("\n\n Y/N: ")
 
-		if answer[0].lower() == "n" || answer[0].lower() == "q":
+		if answer[0].lower() != "y":
 			return 
 
 	credits()
@@ -70,4 +70,5 @@ def credits():
 	print "\n\n Zachary Tyhacz 2019"
 	print "Thank you for choosing UTPM!"
 	print "\n If you would like to contribute to the UTPM project with edits, suggestions, comments, issues, fixes, or documentation please feel free to visit the Github!"
+	print "\n GITHUB: https://github.com/zacharytyhacz/UTPM "
 	print "\n\n"	
