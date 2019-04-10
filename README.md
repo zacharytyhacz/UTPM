@@ -28,7 +28,7 @@ Will create a .ini for your project.
 Will parse through class files for config variables and set default values and place in your System folder.
 
 # Files 
-
+* These files are JSON formatted *
 ## __.utpm.json__
 This will be placed in your local folder.
 ( Mac/Linux: ~/.utpm.json )
