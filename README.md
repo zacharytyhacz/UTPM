@@ -1,2 +1,46 @@
 # UTPM
 Unreal Tournament (99) Package Manager
+Easily set up new project folders, install packages/maps/mods in one command.
+
+# Commands 
+
+## __utpm help__
+See a list of commands and  help about using the Unreal Tournament Package Manager
+
+## __utpm setup__
+Set your Unreal Tournament main directory.
+e.g. C:/Program\ Files/Unreal\ Tournament 
+
+## __utpm create <project name>__
+Create a new UT project. 
+Will create Classes folder and a README.md !  
+
+## __utpm make:u <project folder name>__
+Will generate the .u for your project and place into your System folder.
+
+## __utpm make:int <project folder name>__
+Will walk through creating a .int file for your project.
+Select a class in the project folder you want to create mutator/game mode/other out of.
+Create name and description for the mutator and it will create the .int and place in your System folder.
+
+## __utpm make:ini <project folder name>__
+Will create a .ini for your project.
+Will parse through class files for config variables and set default values and place in your System folder.
+
+# Files 
+
+## __.utpm.json__
+This will be placed in your local folder.
+( Mac/Linux: ~/.utpm.json )
+( Windows: -coming soon )
+
+Keeps track of your UT directory and UTPM version number. Other settings may be implemented.
+
+## __.utpm.proj__
+This will be created in the root of a UT project folder.
+Contains data about the project name, description, author(s), and possible dependencies.
+
+
+
+
+
