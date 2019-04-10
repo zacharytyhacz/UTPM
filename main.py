@@ -1,35 +1,76 @@
 import sys
+import datetime
 import json
 import os
+import pprint
 
 commands = ['setup','make','create','install','help','require']
-
 
 arg_num = 0
 version = 1
 settings = os.path.expanduser('~/.utpm.json')
 settings_data = {}
 
-def create():
+# Create a new project folder
+# 
+# Creates Classes folder, utpm.proj file
+def create(project_name):
 	print("\n Starting a new awesome mod...")
+
 	project = {}
-	project['name'] = input("Project Name: ")
+	project['name'] = project_name
 
-	while os.path.exists(settings_data['utdir'] + '/' + project['name']) == False:
-		print("This project already exists.")
-		project['name'] = input("Project Name: ")
+	if os.path.exists(settings_data['utdir'] + '/' + project['name']):
+		print(settings_data['utdir'] + '/' + project['name'])
+		print("ERROR: This project folder already exists within your Unreal Tournament directory.")
+		return
+	proj_dir = settings_data['utdir'] + '/' + project['name']
+	project['authors'] = raw_input("Enter author or authors: ")
+	project['description'] = raw_input("Enter project description: ")
 
-	project['author'] = input("Author(s): ")
+	# create main project folder 
+	os.makedirs(proj_dir)
 
-def setup ():
+	# create classes folder 
+	os.makedirs(proj_dir + "/Classes")
+	os.makedirs(proj_dir + "/Models")
+	os.makedirs(proj_dir + "/Sounds")
+	os.makedirs(proj_dir + "/Textures")
+	
+	proj_file =  open(proj_dir + "/utpm.proj","w+")
+	json.dump(project,proj_file)
+	proj_file.close()
+	del proj_file
+
+	create_readme = raw_input("Create README.md? Y/N: ")
+	if create_readme[0].lower() == 'y':
+		readme = open(proj_dir + "/README.md","w+")
+		readme.write(str(datetime.date.today()) + "\n" + project['name'] + " by " + project['authors'] + "\n")
+		readme.write(str(project['description']) + "\n\n")
+		readme.close()
+		del readme
+
+	# check if this project name already exists
+	# create Classes folder 
+	# create readme.md file
+	# create utpm.proj file 
+
+# Set user's UT directory and create a .utpm.json local file to hold local data 
+def get_settings():
+	global settings_data
 	if os.path.exists(settings):
 		with open(settings) as raw:
 			settings_data = json.load(raw)
-			print("Change existing UT Package Manager settings?\n")
-			print("Unreal Tournament Directory: ", data['utdir'])
-			print("Version: ", data['version'])
-			del data 
-		answer = input("\n\n Y/N: ")
+			print(settings_data['utdir'])
+			return True 
+	return False
+
+def setup ():
+	if get_settings() == True:
+		print("Unreal Tournament Directory: ", settings_data['utdir'])
+		print("Version: ", settings_data['version'])
+		print("\nChange existing UT Package Manager settings?\n")
+		answer = raw_input("\n\n Y/N: ")
 
 		if answer[0].lower() != "y":
 			return 
@@ -40,7 +81,7 @@ def setup ():
 	new_settings['utdir'] = '12123123123'
 
 	while os.path.exists(new_settings['utdir']) == False:
-		new_settings['utdir'] = input("Enter the absolute path to your Unreal Tournament game directory: ")
+		new_settings['utdir'] = raw_input("Enter the absolute path to your Unreal Tournament game directory: ")
 		if os.path.exists(new_settings['utdir']) == False:
 			print("Cannot find path, please try again.")
 		if os.path.exists(new_settings['utdir'] + '/System') == False:
@@ -55,6 +96,7 @@ def setup ():
 	print("\n\n Unreal Tournament Package Manager successfully set up.")
 	print("\n Happy Modding!")
 		
+# show credits / info
 def credits ():
 	print("\n\n Zachary Tyhacz 2019")
 	print("Thank you for choosing UTPM!")
@@ -66,28 +108,31 @@ command = ""
 make_method = ""
 make_methods = ["u","int","ini"]
 
-for arg in sys.argv:
-	if arg_num > 0:
-		if arg_num == 1:
-			command = arg.lower().split(':')[0]
-			if command not in commands:
-				print("ERROR: INVALID COMMAND")
-				break
-			if command == 'setup':
-				setup()
-			if command == 'help':
-				help()
-			if command == 'make': 
-				make_method = arg.lower().split(':')[1]
-				if make_method not in make_methods:
-					print("ERROR: INVALID MAKE:<METHOD>")
-					break;
-
-		elif arg_num == 2:
-			if command == 'create':
-				# check if this project name already exists
-				# create Classes folder 
-				# create readme.md file
-				# create utpm.proj file 
-	arg_num =+ 1
-		
+if True:
+	if get_settings() == False:
+		setup()
+	for arg in sys.argv:
+		print(settings_data['utdir'])
+		print(arg)
+		print(str(arg_num))
+		if arg_num > 0:
+			# get command name
+			if arg_num == 1:
+				command = arg.lower().split(':')[0]
+				if command not in commands:
+					print("\n" + command)
+					print("ERROR: INVALID COMMAND")
+					break
+				if command == 'setup':
+					setup()
+				if command == 'help':
+					help()
+				if command == 'make': 
+					make_method = arg.lower().split(':')[1]
+					if make_method not in make_methods:
+						print("ERROR: INVALID MAKE:<METHOD>")
+						break;
+			elif arg_num == 2: # get arguments 
+				if command == 'create':
+					create(arg)	
+		arg_num += 1
