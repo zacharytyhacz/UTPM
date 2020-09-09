@@ -4,7 +4,8 @@ import json
 import os
 import pprint
 
-commands = ['setup','make','create','install','help','require']
+commands = ['setup','make','create','install','--help','require']
+make_methods = ["u","int","ini"]
 
 arg_num = 0
 version = 1
@@ -66,35 +67,36 @@ def get_settings():
 	return False
 
 def setup ():
-	if get_settings() == True:
-		print("Unreal Tournament Directory: ", settings_data['utdir'])
-		print("Version: ", settings_data['version'])
-		print("\nChange existing UT Package Manager settings?\n")
-		answer = raw_input("\n\n Y/N: ")
+    global settings_data
+    if get_settings() == True:
+            print("Unreal Tournament Directory: ", settings_data['utdir'])
+            print("Version: ", settings_data['version'])
+            print("\nChange existing UT Package Manager settings?\n")
+            answer = raw_input("\n\n Y/N: ")
 
-		if answer[0].lower() != "y":
-			return 
+            if answer[0].lower() != "y":
+                    return 
 
-	credits()
-	new_settings = {}
-	new_settings['version'] = version
-	new_settings['utdir'] = '12123123123'
+    credits()
+    new_settings = {}
+    new_settings['version'] = version
+    new_settings['utdir'] = '12123123123'
 
-	while os.path.exists(new_settings['utdir']) == False:
-		new_settings['utdir'] = raw_input("Enter the absolute path to your Unreal Tournament game directory: ")
-		if os.path.exists(new_settings['utdir']) == False:
-			print("Cannot find path, please try again.")
-		if os.path.exists(new_settings['utdir'] + '/System') == False:
-			new_settings['utdir'] = '12123123123'
-			print("Invalid Unreal Tournament folder because 'System' folder does not exist.")
-		
-	settings_file = open(settings,"w+")
-	json.dump(new_settings, settings_file)
-	settings_file.close()
-	settings_data = new_settings
-		
-	print("\n\n Unreal Tournament Package Manager successfully set up.")
-	print("\n Happy Modding!")
+    while os.path.exists(new_settings['utdir']) == False:
+            new_settings['utdir'] = raw_input("Enter the absolute path to your Unreal Tournament game directory: ")
+            if os.path.exists(new_settings['utdir']) == False:
+                    print("Cannot find path, please try again.")
+            if os.path.exists(new_settings['utdir'] + '/System') == False:
+                    new_settings['utdir'] = '12123123123'
+                    print("Invalid Unreal Tournament folder because 'System' folder does not exist.")
+            
+    settings_file = open(settings,"w+")
+    json.dump(new_settings, settings_file)
+    settings_file.close()
+    settings_data = new_settings
+            
+    print("\n\n Unreal Tournament Package Manager successfully set up.")
+    print("\n Happy Modding!")
 		
 # show credits / info
 def credits ():
@@ -106,33 +108,31 @@ def credits ():
 
 command = ""
 make_method = ""
-make_methods = ["u","int","ini"]
 
-if True:
-	if get_settings() == False:
-		setup()
-	for arg in sys.argv:
-		print(settings_data['utdir'])
-		print(arg)
-		print(str(arg_num))
-		if arg_num > 0:
-			# get command name
-			if arg_num == 1:
-				command = arg.lower().split(':')[0]
-				if command not in commands:
-					print("\n" + command)
-					print("ERROR: INVALID COMMAND")
-					break
-				if command == 'setup':
-					setup()
-				if command == 'help':
-					help()
-				if command == 'make': 
-					make_method = arg.lower().split(':')[1]
-					if make_method not in make_methods:
-						print("ERROR: INVALID MAKE:<METHOD>")
-						break;
-			elif arg_num == 2: # get arguments 
-				if command == 'create':
-					create(arg)	
-		arg_num += 1
+if get_settings() == False:
+    setup()
+for arg in sys.argv:
+	print(settings_data['utdir'])
+	print(arg)
+	print(str(arg_num))
+	if arg_num > 0:
+		# get command name
+		if arg_num == 1:
+			command = arg.lower().split(':')[0]
+			if command not in commands:
+				print("\n" + command)
+				print("ERROR: INVALID COMMAND")
+				break
+			if command == 'setup':
+				setup()
+			if command == 'help':
+				help()
+			if command == 'make': 
+				make_method = arg.lower().split(':')[1]
+				if make_method not in make_methods:
+					print("ERROR: INVALID MAKE:<METHOD>")
+					break;
+		elif arg_num == 2: # get arguments 
+			if command == 'create':
+				create(arg)	
+	arg_num += 1
